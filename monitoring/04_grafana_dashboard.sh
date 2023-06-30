@@ -1,8 +1,9 @@
 #!/bin/bash
 . ../config.sh
-printf "${green}kubectl apply -f \
-  https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/grafana-configmap.yaml${reset}\n"
 
+echo "Configuring Grafana config map using:"
+printf "${green}kubectl apply -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/grafana-configmap.yaml${reset}\n"
+read
 kubectl apply -f \
   https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/docs/src/samples/monitoring/grafana-configmap.yaml
 
@@ -18,4 +19,3 @@ printf "Server: http://localhost:3000\n"
 printf "User: admin\n"
 printf "Password: prom-operator\n"
 printf "${reset}\n"
-
