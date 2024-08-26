@@ -37,3 +37,14 @@ spec:
     limits:
       memory: "1Gi"
       cpu: "2"
+
+  managed:
+    services:
+      disabledDefaultServices: ["ro", "r"]
+      additional:
+      - selectorType: rw
+        serviceTemplate:
+          metadata:
+            name: cluster-example-rw-lb
+          spec:
+            type: LoadBalancer

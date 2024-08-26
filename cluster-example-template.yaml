@@ -1,6 +1,6 @@
 apiVersion: v1
 data:
-  password: dU4zaTFIaDBiWWJDYzRUeVZBYWNCaG1TemdxdHpxeG1PVmpBbjBRSUNoc0pyU211OVBZMmZ3MnE4RUtLTHBaOQ==
+  password: cG9zdGdyZXM=
   username: cG9zdGdyZXM=
 kind: Secret
 metadata:
@@ -45,6 +45,16 @@ spec:
       memory: "1Gi"
       cpu: "2"
 
+  managed:
+    services:
+  #    disabledDefaultServices: ["ro", "r"]
+      additional:
+      - selectorType: rw
+        serviceTemplate:
+          metadata:
+            name: cluster-example-rw-lb
+          spec:
+            type: LoadBalancer
   #affinity:
   #  nodeSelector:
   #    workload: dc1
