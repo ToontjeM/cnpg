@@ -7,6 +7,15 @@ metadata:
   name: cluster-example-superuser
 type: kubernetes.io/basic-auth
 ---
+apiVersion: v1
+data:
+  password: YXBw
+  username: YXBw
+kind: Secret
+metadata:
+  name: cluster-example-app
+type: kubernetes.io/basic-auth
+---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
