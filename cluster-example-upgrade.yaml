@@ -1,3 +1,21 @@
+apiVersion: v1
+data:
+  password: cG9zdGdyZXM=
+  username: cG9zdGdyZXM=
+kind: Secret
+metadata:
+  name: cluster-example-superuser
+type: kubernetes.io/basic-auth
+---
+apiVersion: v1
+data:
+  password: YXBw
+  username: YXBw
+kind: Secret
+metadata:
+  name: cluster-example-app
+type: kubernetes.io/basic-auth
+---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -29,6 +47,22 @@ spec:
 
   monitoring:
     enablePodMonitor: true
+  
+  managed:
+    services:
+  #    disabledDefaultServices: ["ro", "r"]
+      additional:
+      - selectorType: rw
+        serviceTemplate:
+          metadata:
+            name: cluster-example-rw-lb
+          spec:
+            type: LoadBalancer
+  #affinity:
+  #  nodeSelector:
+  #    workload: dc1
+
+
 
   backup:
     #target: "prefer-standby"

@@ -19,19 +19,32 @@ type: kubernetes.io/basic-auth
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: cluster-example-13
+  name: cluster-example
 spec:
-  instances: 1
-  imageName: ghcr.io/cloudnative-pg/postgresql:13
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:14.2
   #imagePullPolicy: Never
   enableSuperuserAccess: true
 
-  bootstrap:
-    initdb:
-      database: app
+  # Reduce the frequency of standby HA slots updates to once every 5 minutes
+  replicationSlots:
+    highAvailability:
+      enabled: true
+    #updateInterval: 300
+
+  minSyncReplicas: 1
+  maxSyncReplicas: 2
+
+  postgresql:
+    parameters:
+      pg_stat_statements.max: "10000"
+      pg_stat_statements.track: all
 
   storage:
     size: 1Gi
+
+  monitoring:
+    enablePodMonitor: true
 
   resources:
     requests:
@@ -43,7 +56,7 @@ spec:
 
   managed:
     services:
-#      disabledDefaultServices: ["ro", "r"]
+  #    disabledDefaultServices: ["ro", "r"]
       additional:
       - selectorType: rw
         serviceTemplate:
@@ -51,3 +64,7 @@ spec:
             name: cluster-example-rw-lb
           spec:
             type: LoadBalancer
+  #affinity:
+  #  nodeSelector:
+  #    workload: dc1
+
