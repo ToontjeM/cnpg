@@ -1,44 +1,25 @@
-# Description
-In this demo I'll show you how to create a Postgres cluster with CloudNativePG kubernetes operator. The features that I want to show you are:
-- Kubernetes plugin install
-- CloudNativePG operator install
-- Postgres cluster install
-- Insert data in the cluster
-- Switchover (promote)
-- Failover
-- Backup
-- Recovery
-- Scale out/down
-- Rolling updates (minor and major)
-- Point In Time Recovery (PITR)
-- Fencing
-- Replication slots (for HA)
-- Monitoring (Prometheus/Grafana)
-- Operator upgrade
-- PostgreSQL audit with PGAudit
-- Last CloudNativePG tested version is 1.20.2
+# CloudNativePG
+In this demo shows basic operating procedures using the EDB CloudNativePG (CNPG) operator for kubernetes.
 
-# Prerequisites
-- K8s environment (K8s, k3d, kind)
-- Docker
-- Tested with K3d and kind. 
-  - k3d is a lightweight wrapper to run k3s (Rancher Lab’s minimal Kubernetes distribution) in docker.
-  - kind is a tool for running local Kubernetes clusters using Docker container “nodes”.
-- jq (optional if you want to format JSON logs outputs)
+## Demo prerequisites
+This demo has been developed using Docker for Desktop on an Intel-based MacBook Pro. 
 
-# Demo
-Execute commands in the correct order:
-```
-./01_install_plugin.sh
-./02_install_operator.sh
-./03_check_operator_installed.sh
-./04_get_cluster_config_file.sh
-./05_install_cluster.sh
-```
-Open a new session and execute:
-```
-./06_show_status.sh
-```
+# Demo flow
+`01_install_plugin.sh` installs the CNPG plugin for `kubectl`.
+`02_install_operator.sh` installs the CNPG operator deployment.
+You can use `03_check_operator_installed.sh` to check if the deployment is up and running.
+`04_get_cluster_config_file.sh` shows you the various specifications we are going to deploy. 
+Take note of the `ClusterImageCatalog` section which shows which Postgres images are allowed to be deployed. 
+Also check the cluster specification and note that we are deploying PostgreSQL v16.4, which in the ClusterImageCatalogis defined as the v16 image to be used.
+`05_install_cluster.sh` performs the actual deployment of the cluster.
+Open a new pane in your terminal and run `06_show_status.sh` to get a continuous update of what is happening in your cluster.
+Once the cluster is in healthy state, run `07_insert_data.sh` to insert data in the database. Notice the LSNs moving as replication is happening.
+One of the many questions we get is how to do minor and major upgrades of Postgres in kubernetes. `08_minor_update.sh` shows you a minor upgrade by updating the ClusterImageCatalog.
+`09_major_upgrade.sh` shows you a major version upgrade from Postgres 16 to 17 using the cluster specification file.
+
+TBC
+
+
 Open another session and execute MinIO server (S3 Object Storage compatible):
 Please, check the IP of your computer and replace in file cluster-example-upgrade.yaml.
 
