@@ -1,12 +1,12 @@
 #!/bin/bash
-. ./config.sh
-. ./primary.sh
+. config/config.sh
+. scripts/primary.sh
+
+echo $primary
 
 printf "${green}kubectl exec -i ${primary} -- psql < sqltest.sql${reset}\n"
 
-kubectl exec -i ${primary} -- psql < sqltest.sql
+kubectl exec -i ${primary} -- psql < scripts/sqltest.sql
 
 # Worldcup sample ata
-cd worldcup_data
-./create_players.sh
-cd ..
+. scripts/create_players.sh

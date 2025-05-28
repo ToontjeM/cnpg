@@ -17,20 +17,34 @@ metadata:
 type: kubernetes.io/basic-auth
 ---
 apiVersion: postgresql.cnpg.io/v1
+kind: ClusterImageCatalog
+metadata:
+  name: postgresql
+spec:
+  images:
+  - major: 15
+    image: ghcr.io/cloudnative-pg/postgresql:15.6
+  - major: 16
+    image: ghcr.io/cloudnative-pg/postgresql:16.4
+  - major: 17
+    image: ghcr.io/cloudnative-pg/postgresql:17.5
+---
+apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: cluster-example
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:14.2
-  #imagePullPolicy: Never
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ClusterImageCatalog
+    name: postgresql
+    major: 16
   enableSuperuserAccess: true
 
-  # Reduce the frequency of standby HA slots updates to once every 5 minutes
   replicationSlots:
     highAvailability:
       enabled: true
-    #updateInterval: 300
 
   minSyncReplicas: 1
   maxSyncReplicas: 2
@@ -56,7 +70,6 @@ spec:
 
   managed:
     services:
-  #    disabledDefaultServices: ["ro", "r"]
       additional:
       - selectorType: rw
         serviceTemplate:
@@ -64,7 +77,3 @@ spec:
             name: cluster-example-rw-lb
           spec:
             type: LoadBalancer
-  #affinity:
-  #  nodeSelector:
-  #    workload: dc1
-

@@ -1,36 +1,19 @@
-apiVersion: v1
-data:
-  password: cG9zdGdyZXM=
-  username: cG9zdGdyZXM=
-kind: Secret
-metadata:
-  name: cluster-example-superuser
-type: kubernetes.io/basic-auth
----
-apiVersion: v1
-data:
-  password: YXBw
-  username: YXBw
-kind: Secret
-metadata:
-  name: cluster-example-app
-type: kubernetes.io/basic-auth
----
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: cluster-example
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:14.2
-  #imagePullPolicy: Never
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ClusterImageCatalog
+    name: postgresql
+    major: 17
   enableSuperuserAccess: true
 
-  # Reduce the frequency of standby HA slots updates to once every 5 minutes
   replicationSlots:
     highAvailability:
       enabled: true
-    #updateInterval: 300
 
   minSyncReplicas: 1
   maxSyncReplicas: 2
@@ -56,7 +39,6 @@ spec:
 
   managed:
     services:
-  #    disabledDefaultServices: ["ro", "r"]
       additional:
       - selectorType: rw
         serviceTemplate:
@@ -64,7 +46,3 @@ spec:
             name: cluster-example-rw-lb
           spec:
             type: LoadBalancer
-  #affinity:
-  #  nodeSelector:
-  #    workload: dc1
-
